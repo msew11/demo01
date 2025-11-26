@@ -41,7 +41,21 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // 检测鼠标右键按下/释放
+        // 鼠标锁定控制
+        HandleCursorLock();
+
+        // 状态切换处理
+        HandleStateSwitch();
+
+        // 根据状态执行对应逻辑
+        ExecuteCurrentState();
+
+        // 角色移动
+        RoleMove();
+    }
+
+    void HandleCursorLock()
+    {
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
         {
             Cursor.visible = false;
@@ -52,46 +66,57 @@ public class PlayerMovement : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
+    }
 
-        // 只在激活状态下执行鼠标面向控制
+    void HandleStateSwitch()
+    {
         if (Input.GetMouseButton(1))
         {
-            // 右键模式激活时计算偏移
-            if (_cameraState != CameraState.RIGHT)
-            {
-                Debug.Log("切换到右键模式");
-                // 保存当前LookAt的正前方方向
-                Vector3 lookDirection = _lookAt.forward;
-                // 将角色朝向该方向（只取水平方向）
-                transform.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
-
-                // 重置LookAt的本地旋转，使其与角色保持一致
-                _lookAt.localRotation = Quaternion.identity;
-
-                // 同步yaw值
-                _roleYaw = transform.eulerAngles.y;
-                // 重置相机水平角度，保持俯仰角度不变
-                _cameraYaw = 0f;
-
-                // 重新应用当前的俯仰角到LookAt
-                _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
-            }
-            _cameraState = CameraState.RIGHT;
+            SwitchToRightMouseState();
         }
         else if (Input.GetMouseButton(0))
         {
-            if (_cameraState != CameraState.LEFT)
-            {
-                Debug.Log("切换到左键模式");
-            }
-
-            _cameraState = CameraState.LEFT;
+            SwitchToLeftMouseState();
         }
         else
         {
             _cameraState = CameraState.NONE;
         }
+    }
 
+    void SwitchToRightMouseState()
+    {
+        if (_cameraState != CameraState.RIGHT)
+        {
+            // 保存当前LookAt的正前方方向
+            Vector3 lookDirection = _lookAt.forward;
+            // 将角色朝向该方向（只取水平方向）
+            transform.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
+
+            // 重置LookAt的本地旋转，使其与角色保持一致
+            _lookAt.localRotation = Quaternion.identity;
+
+            // 同步yaw值
+            _roleYaw = transform.eulerAngles.y;
+            // 重置相机水平角度，保持俯仰角度不变
+            _cameraYaw = 0f;
+
+            // 重新应用当前的俯仰角到LookAt
+            _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
+        }
+        _cameraState = CameraState.RIGHT;
+    }
+
+    void SwitchToLeftMouseState()
+    {
+        if (_cameraState != CameraState.LEFT)
+        {
+        }
+        _cameraState = CameraState.LEFT;
+    }
+
+    void ExecuteCurrentState()
+    {
         if (_cameraState == CameraState.RIGHT)
         {
             // 右键模式
@@ -102,8 +127,6 @@ public class PlayerMovement : MonoBehaviour
             // 左键模式
             LeftMouseButtonState();
         }
-
-        RoleMove();
     }
 
     void LeftMouseButtonState()
