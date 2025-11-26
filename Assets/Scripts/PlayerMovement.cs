@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public class PlayerMovement : MonoBehaviour
 {
     private Camera _mainCamera;
@@ -7,13 +8,22 @@ public class PlayerMovement : MonoBehaviour
 
     public float speed = 10f;
     public float rotateSpeed = 10f;
-    public float mouseSensitivity = 2.0f;  // 鼠标灵敏度
+    public float mouseSensitivity = 2.0f; // 鼠标灵敏度
 
-    // 添加鼠标控制状态
-    private bool _isFaceControl = false;
+    // 镜头状态
+    private CameraState _cameraState = CameraState.NONE;
 
     // 添加相机俯仰控制变量
-    private float _cameraPitch = 0f;  // 相机垂直旋转角度
+    private float _cameraPitch = 0f; // 相机垂直旋转角度
+    private float _cameraYaw = 0f; // 相机水平旋转角度
+    private float _roleYaw = 0f; // 角色水平旋转角度
+
+    enum CameraState
+    {
+        NONE = 0,
+        RIGHT = 1,
+        LEFT = 2
+    }
 
     void Start()
     {
@@ -23,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.LogError("未找到主相机");
             return;
         }
+
         _characterController = GetComponent<CharacterController>();
 
         _lookAt = transform.Find("LookAt");
@@ -42,25 +53,93 @@ public class PlayerMovement : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
 
-        _isFaceControl = Input.GetMouseButton(1);
-
         // 只在激活状态下执行鼠标面向控制
-        if (_isFaceControl)
+        if (Input.GetMouseButton(1))
         {
-            RoleFace();
-            CameraPitchControl();
+            // 右键模式激活时计算偏移
+            if (_cameraState != CameraState.RIGHT)
+            {
+                Debug.Log("切换到右键模式");
+                // 保存当前LookAt的正前方方向
+                Vector3 lookDirection = _lookAt.forward;
+                // 将角色朝向该方向（只取水平方向）
+                transform.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
+
+                // 重置LookAt的本地旋转，使其与角色保持一致
+                _lookAt.localRotation = Quaternion.identity;
+
+                // 同步yaw值
+                _roleYaw = transform.eulerAngles.y;
+                // 重置相机水平角度，保持俯仰角度不变
+                _cameraYaw = 0f;
+
+                // 重新应用当前的俯仰角到LookAt
+                _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
+            }
+            _cameraState = CameraState.RIGHT;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            if (_cameraState != CameraState.LEFT)
+            {
+                Debug.Log("切换到左键模式");
+            }
+
+            _cameraState = CameraState.LEFT;
+        }
+        else
+        {
+            _cameraState = CameraState.NONE;
+        }
+
+        if (_cameraState == CameraState.RIGHT)
+        {
+            // 右键模式
+            RightMouseButtonState();
+        }
+        else if (_cameraState == CameraState.LEFT)
+        {
+            // 左键模式
+            LeftMouseButtonState();
         }
 
         RoleMove();
     }
 
-    void RoleFace()
+    void LeftMouseButtonState()
+    {
+        LookAtControl();
+        CameraPitchControl();
+    }
+
+    void RightMouseButtonState()
+    {
+        RoleFaceControl();
+        CameraPitchControl();
+    }
+
+    void RoleFaceControl()
     {
         // 使用鼠标相对移动
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
 
-        // 绕Y轴旋转角色（水平转向）
-        transform.Rotate(Vector3.up, mouseX * rotateSpeed);
+        // 累加水平角度
+        _roleYaw += mouseX * rotateSpeed;
+
+        // 合并水平和垂直旋转
+        transform.localRotation = Quaternion.Euler(0, _roleYaw, 0);
+    }
+
+    void LookAtControl()
+    {
+        // 使用鼠标相对移动
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+
+        // 累加水平角度
+        _cameraYaw += mouseX * rotateSpeed;
+
+        // 合并水平和垂直旋转
+        _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
     }
 
     void CameraPitchControl()
@@ -75,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
         _cameraPitch = Mathf.Clamp(_cameraPitch, -90f, 90f);
 
         // 应用旋转到LookAt子物体
-        _lookAt.localRotation = Quaternion.Euler(_cameraPitch, 0, 0);
+        _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
     }
 
     void RoleMove()
@@ -87,4 +166,3 @@ public class PlayerMovement : MonoBehaviour
         _characterController.Move(dir);
     }
 }
-
