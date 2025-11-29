@@ -1,3 +1,4 @@
+using data;
 using UnityEngine;
 
 namespace system
@@ -9,27 +10,27 @@ namespace system
 
         private readonly Transform _groundCheck;
 
-        private Vector3 _velocity = Vector3.zero;
-        private bool _isGround;
+        private readonly PlayerData _playerData;
 
-        public GravitySystem(GameConfig config, Transform player)
+        public GravitySystem(GameConfig config, Transform player, PlayerData playerData)
         {
             _config = config;
             _characterController = player.GetComponent<CharacterController>();
 
             _groundCheck = player.Find("GroundCheck");
+            _playerData = playerData;
         }
 
         protected override void Update()
         {
-            _isGround = Physics.CheckSphere(_groundCheck.position, _config.groundCheckRadius, _config.groundLayer);
+            _playerData.IsGround = Physics.CheckSphere(_groundCheck.position, _config.groundCheckRadius, _config.groundLayer);
 
-            if (_isGround && _velocity.y < 0)
+            if (_playerData.IsGround && _playerData.Velocity.y < 0)
             {
-                _velocity.y = 0;
+                _playerData.Velocity.y = 0;
             }
 
-            if (!_isGround)
+            if (!_playerData.IsGround)
             {
                 ApplyGravity();
             }
@@ -37,13 +38,7 @@ namespace system
 
         private void ApplyGravity()
         {
-            _velocity.y += _config.gravity * Time.deltaTime;
-            _characterController.Move(_velocity * Time.deltaTime);
-        }
-
-        public Vector3 GetVelocity()
-        {
-            return _velocity;
+            _playerData.Velocity.y += _config.gravity * Time.deltaTime;
         }
     }
 

@@ -12,6 +12,7 @@ public class GameConfig : ScriptableObject
     public float gravity = -9.8f;
     [Range(-0.2f, -0.1f)]
     public float groundCheckRadius = 0.2f;
+    public float jumpHeight = 3f;
 
     [Header("Camera Settings")]
     public float mouseSensitivity = 2.0f;

@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
-using system;
-using UnityEngine;
+using System.Reflection;
+using data;
 using UnityEditor;
 
 [CustomEditor(typeof(PlayerController))]
@@ -12,24 +12,24 @@ public class PlayerControllerEditor : Editor
 
         PlayerController playerController = (PlayerController)target;
 
-        // 获取 gravitySystem 实例
-        var gravitySystemField = typeof(PlayerController).GetField("_gravitySystem",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        // 通过反射获取 _playerData 字段（假设是 Dictionary 类型）
+        var playerDataField = typeof(PlayerController).GetField("_playerData",
+            BindingFlags.NonPublic | BindingFlags.Instance);
 
-        if (gravitySystemField != null)
+        if (playerDataField != null)
         {
-            var gravitySystem = gravitySystemField.GetValue(playerController) as GravitySystem;
-            if (gravitySystem != null)
+            var playerData = (PlayerData)playerDataField.GetValue(playerController);
+            if (playerData != null)
             {
-                // 直接访问私有字段 _velocity
-                var velocityField = typeof(GravitySystem).GetField("_velocity",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-                if (velocityField != null)
-                {
-                    Vector3 velocity = (Vector3)velocityField.GetValue(gravitySystem);
-                    EditorGUILayout.LabelField("Gravity Velocity", velocity.ToString());
-                }
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Player Data", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("PlayerId", playerData.PlayerId);
+                EditorGUILayout.LabelField("IsGround", playerData.IsGround.ToString());
+                EditorGUILayout.LabelField("Velocity", playerData.Velocity.ToString());
+            }
+            else
+            {
+                EditorGUILayout.LabelField("Player Data", "Not initialized yet");
             }
         }
     }

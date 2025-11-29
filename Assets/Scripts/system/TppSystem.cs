@@ -27,9 +27,7 @@ namespace system
         public TppSystem(GameConfig config, Transform player)
         {
             _config = config;
-
             _player = player;
-
             _lookAt = player.Find("LookAt");
         }
 
@@ -81,6 +79,7 @@ namespace system
             {
                 // 保存当前LookAt的正前方方向
                 Vector3 lookDirection = _lookAt.forward;
+
                 // 将角色朝向该方向（只取水平方向）
                 _player.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
 
@@ -89,6 +88,7 @@ namespace system
 
                 // 同步yaw值
                 _roleYaw = _player.eulerAngles.y;
+
                 // 重置相机水平角度，保持俯仰角度不变
                 _cameraYaw = 0f;
 
