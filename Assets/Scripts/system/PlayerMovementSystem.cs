@@ -7,11 +7,10 @@ namespace system
         private readonly GameConfig _config;
         private readonly CharacterController _characterController;
 
-        public PlayerMovementSystem(GameConfig config, CharacterController characterController)
+        public PlayerMovementSystem(GameConfig config, Transform player)
         {
             _config = config;
-            _characterController = characterController;
-            IsInitialized = true;
+            _characterController = player.GetComponent<CharacterController>();
         }
 
         private void RoleMove()

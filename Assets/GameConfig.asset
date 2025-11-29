@@ -13,4 +13,9 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   speed: 10
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  gravity: -30
+  groundCheckRadius: -0.1
   mouseSensitivity: 4

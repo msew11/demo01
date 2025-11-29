@@ -13,9 +13,9 @@ namespace system
         private CameraState _cameraState = CameraState.None;
 
         // 添加相机俯仰控制变量
-        private float _cameraPitch = 0f; // 相机垂直旋转角度
-        private float _cameraYaw = 0f; // 相机水平旋转角度
-        private float _roleYaw = 0f; // 角色水平旋转角度
+        private float _cameraPitch; // 相机垂直旋转角度
+        private float _cameraYaw; // 相机水平旋转角度
+        private float _roleYaw; // 角色水平旋转角度
 
         enum CameraState
         {
@@ -24,14 +24,13 @@ namespace system
             Left = 2
         }
 
-        public TppSystem(GameConfig config, Transform player, Transform lookAt)
+        public TppSystem(GameConfig config, Transform player)
         {
             _config = config;
 
             _player = player;
-            _lookAt = lookAt;
 
-            IsInitialized = true;
+            _lookAt = player.Find("LookAt");
         }
 
         protected override void Update()

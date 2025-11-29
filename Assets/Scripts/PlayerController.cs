@@ -1,37 +1,29 @@
 using system;
 using UnityEngine;
 
-public class PlayerController: MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    GameConfig gameConfig;
+    [SerializeField] GameConfig gameConfig;
 
     private PlayerMovementSystem _movementSystem;
+    private GravitySystem _gravitySystem;
     private TppSystem _tppSystem;
 
     void Start()
     {
-        CharacterController characterController = GetComponent<CharacterController>();
-        if (gameConfig == null)
-        {
-            Debug.LogError("未找到游戏配置");
-            return;
-        }
+        _movementSystem = new PlayerMovementSystem(gameConfig, transform);
+        _gravitySystem = new GravitySystem(gameConfig, transform);
+        _tppSystem = new TppSystem(gameConfig, transform);
 
-        Transform lookAt = transform.Find("LookAt");
-        if (lookAt == null)
-        {
-            Debug.LogError("未找到lookAt");
-            return;
-        }
-
-        _movementSystem = new PlayerMovementSystem(gameConfig, characterController);
-        _tppSystem = new TppSystem(gameConfig, transform, lookAt);
+        _movementSystem.Init();
+        _gravitySystem.Init();
+        _tppSystem.Init();
     }
 
     void Update()
     {
         _movementSystem.HandleUpdate();
+        _gravitySystem.HandleUpdate();
         _tppSystem.HandleUpdate();
     }
 }
