@@ -174,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
         _cameraPitch -= mouseY;
 
         // 限制俯仰角度范围（避免过度旋转）
-        _cameraPitch = Mathf.Clamp(_cameraPitch, -90f, 90f);
+        _cameraPitch = Mathf.Clamp(_cameraPitch, -20f, 70f);
 
         // 应用旋转到LookAt子物体
         _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
