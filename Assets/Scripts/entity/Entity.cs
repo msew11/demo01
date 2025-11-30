@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using component;
 using data;
 using System;
+using eventbus;
 
 namespace entity
 {
@@ -82,6 +83,14 @@ namespace entity
                 _dataMap[dataName] = data;
             }
             return data as T;
+        }
+
+        public void SendEvent(BaseEvent ev)
+        {
+            foreach (var component in _componentMap.Values)
+            {
+                component.SendEvent(ev);
+            }
         }
     }
 }

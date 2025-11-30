@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         _player.Start();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         _player.FixUpdate(Time.deltaTime);
 

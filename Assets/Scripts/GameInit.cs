@@ -1,7 +1,7 @@
 using data;
 using entity;
+using eventbus;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class GameInit : MonoBehaviour
 {
@@ -18,6 +18,9 @@ public class GameInit : MonoBehaviour
 
         // 初始化组件注册表
         EntityRegistryInitializer.Initialize();
+        
+        // 初始化事件总线
+        EventBus.Instance.Initialize();
     }
 
     void Start()

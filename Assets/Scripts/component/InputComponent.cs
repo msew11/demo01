@@ -1,4 +1,5 @@
 using entity;
+using eventbus;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +7,7 @@ namespace component
 {
     public class InputComponent: BaseComponent
     {
-        private InputSystem _inputSystem;
+        private readonly InputSystem _inputSystem;
 
         public InputComponent(Entity entity) : base(entity)
         {
@@ -15,11 +16,19 @@ namespace component
             _inputSystem.Player.Jump.performed += Jump;
         }
 
+        public override void OnDestroy()
+        {
+            _inputSystem.Player.Jump.performed -= Jump;
+            _inputSystem.Player.Disable();
+            _inputSystem.Dispose();
+        }
+
         private void Jump(InputAction.CallbackContext context)
         {
             if (!context.performed) return;
 
-            Debug.Log("Jump");
+            Debug.Log("Input Jump");
+            Entity.SendEvent(new JumpEvent());
         }
     }
 }

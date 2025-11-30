@@ -1,4 +1,5 @@
 using entity;
+using eventbus;
 
 namespace component
 {
@@ -11,20 +12,25 @@ namespace component
             Entity = entity;
         }
 
-        public void Start()
+        public virtual void Start()
         {
         }
 
-        public void FixUpdate(float deltaTime)
+        public virtual void FixUpdate(float deltaTime)
         {
         }
 
-        public void Update()
+        public virtual void Update()
         {
         }
 
-        public void OnDestroy()
+        public virtual void OnDestroy()
         {
+        }
+        
+        public void SendEvent(BaseEvent ev)
+        {
+            EventBus.Instance.SendEventToComponent(this, ev);
         }
     }
 }
