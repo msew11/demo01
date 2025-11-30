@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace system
+namespace component
 {
-    public class TppSystem: GameSystem
+    public class TppComponent: BaseComponent
     {
         private readonly GameConfig _config;
 
         private readonly Transform _player;
-        private readonly Transform _lookAt;
+        private readonly Transform _lookRoot;
 
         // 镜头状态
         private CameraState _cameraState = CameraState.None;
@@ -24,14 +24,14 @@ namespace system
             Left = 2
         }
 
-        public TppSystem(GameConfig config, Transform player)
+        public TppComponent(GameConfig config, Transform player)
         {
             _config = config;
             _player = player;
-            _lookAt = player.Find("LookAt");
+            _lookRoot = player.Find("LookRoot");
         }
 
-        protected override void Update()
+        protected override void OnUpdate()
         {
             // 鼠标锁定控制
             HandleCursorLock();
@@ -78,13 +78,13 @@ namespace system
             if (_cameraState != CameraState.Right)
             {
                 // 保存当前LookAt的正前方方向
-                Vector3 lookDirection = _lookAt.forward;
+                Vector3 lookDirection = _lookRoot.forward;
 
                 // 将角色朝向该方向（只取水平方向）
                 _player.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
 
                 // 重置LookAt的本地旋转，使其与角色保持一致
-                _lookAt.localRotation = Quaternion.identity;
+                _lookRoot.localRotation = Quaternion.identity;
 
                 // 同步yaw值
                 _roleYaw = _player.eulerAngles.y;
@@ -93,7 +93,7 @@ namespace system
                 _cameraYaw = 0f;
 
                 // 重新应用当前的俯仰角到LookAt
-                _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
+                _lookRoot.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
             }
             _cameraState = CameraState.Right;
         }
@@ -153,7 +153,7 @@ namespace system
             _cameraYaw += mouseX;
 
             // 合并水平和垂直旋转
-            _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
+            _lookRoot.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
         }
 
         void CameraPitchControl()
@@ -168,7 +168,7 @@ namespace system
             _cameraPitch = Mathf.Clamp(_cameraPitch, -20f, 70f);
 
             // 应用旋转到LookAt子物体
-            _lookAt.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
+            _lookRoot.localRotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0);
         }
     }
 }

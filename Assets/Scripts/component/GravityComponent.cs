@@ -1,9 +1,9 @@
 using data;
 using UnityEngine;
 
-namespace system
+namespace component
 {
-    public class GravitySystem : GameSystem
+    public class GravityComponent : BaseComponent
     {
         private readonly GameConfig _config;
         private readonly CharacterController _characterController;
@@ -12,7 +12,7 @@ namespace system
 
         private readonly PlayerData _playerData;
 
-        public GravitySystem(GameConfig config, Transform player, PlayerData playerData)
+        public GravityComponent(GameConfig config, Transform player, PlayerData playerData)
         {
             _config = config;
             _characterController = player.GetComponent<CharacterController>();
@@ -21,7 +21,7 @@ namespace system
             _playerData = playerData;
         }
 
-        protected override void Update()
+        protected override void OnUpdate()
         {
             _playerData.IsGround = Physics.CheckSphere(_groundCheck.position, _config.groundCheckRadius, _config.groundLayer);
 

@@ -1,20 +1,29 @@
 using component;
 using data;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+/**
+ * 使用新版InputSystem
+ */
+public class PlayerControllerV2 : MonoBehaviour
 {
     [SerializeField] GameConfig gameConfig;
 
+    private InputSystem _inputSystem;
+
     private PlayerMovementComponent _movementComponent;
     private GravityComponent _gravityComponent;
-    private TppComponent _tppComponent;
 
     private PlayerData _playerData;
 
     void Awake()
     {
-        Debug.Log($"PlayerController Awake - Component enabled: {enabled}");
+        Debug.Log($"PlayerControllerV2 Awake - Component enabled: {enabled}");
+
+        _inputSystem = new InputSystem();
+        _inputSystem.Player.Enable();
+        _inputSystem.Player.Jump.performed += Jump;
     }
 
     void Start()
@@ -26,22 +35,21 @@ public class PlayerController : MonoBehaviour
 
         _movementComponent = new PlayerMovementComponent(gameConfig, transform, _playerData);
         _gravityComponent = new GravityComponent(gameConfig, transform, _playerData);
-        _tppComponent = new TppComponent(gameConfig, transform);
-
         _movementComponent.Init();
         _gravityComponent.Init();
-        _tppComponent.Init();
     }
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump"))
-        {
-            _movementComponent.Jump();
-        }
-
         _movementComponent.Update();
         _gravityComponent.Update();
-        _tppComponent.Update();
+    }
+
+    private void Jump(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+
+        Debug.Log("Jump");
+        _movementComponent.Jump();
     }
 }

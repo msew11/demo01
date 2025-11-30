@@ -1,9 +1,9 @@
 using data;
 using UnityEngine;
 
-namespace system
+namespace component
 {
-    public class PlayerMovementSystem : GameSystem
+    public class PlayerMovementComponent : BaseComponent
     {
         private readonly GameConfig _config;
         private readonly Transform _player;
@@ -11,7 +11,7 @@ namespace system
 
         private readonly PlayerData _playerData;
 
-        public PlayerMovementSystem(GameConfig config, Transform player, PlayerData playerData)
+        public PlayerMovementComponent(GameConfig config, Transform player, PlayerData playerData)
         {
             _config = config;
             _player = player;
@@ -26,21 +26,20 @@ namespace system
 
             var dir = (_player.forward * vertical + _player.right * horizontal) * (_config.speed * Time.deltaTime);
             _characterController.Move(dir);
-            _characterController.Move(_playerData.Velocity * Time.deltaTime);
         }
 
-        private void Jump()
+        public void Jump()
         {
-            if (_playerData.IsGround && Input.GetButtonDown("Jump"))
+            if (_playerData.IsGround)
             {
                 _playerData.Velocity.y += Mathf.Sqrt(_config.jumpHeight * -2f * _config.gravity);
             }
         }
 
-        protected override void Update()
+        protected override void OnUpdate()
         {
             Move();
-            Jump();
+            _characterController.Move(_playerData.Velocity * Time.deltaTime);
         }
     }
 }
