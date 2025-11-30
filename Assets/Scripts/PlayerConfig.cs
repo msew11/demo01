@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GameConfig", menuName = "Configs/Game Config")]
-public class GameConfig : ScriptableObject
+[CreateAssetMenu(fileName = "PlayerConfig", menuName = "Configs/Player Config")]
+public class PlayerConfig : ScriptableObject
 {
     [Header("Movement Settings")]
     public float speed = 10f;

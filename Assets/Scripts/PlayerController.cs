@@ -1,47 +1,52 @@
-using component;
+using System;
 using data;
+using entity;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] GameConfig gameConfig;
+    public long entityId;
 
-    private PlayerMovementComponent _movementComponent;
-    private GravityComponent _gravityComponent;
-    private TppComponent _tppComponent;
+    private Entity _player;
+    private MoveData _moveData;
 
-    private PlayerData _playerData;
+    private CharacterController _characterController;
 
     void Awake()
     {
-        Debug.Log($"PlayerController Awake - Component enabled: {enabled}");
+        Debug.Log($"PlayerController Awake: entity[{entityId}]");
+        _characterController = GetComponent<CharacterController>();
     }
 
     void Start()
     {
-        // 初始化数据
-        var dataManager = DataManager.Instance;
-        _playerData = new PlayerData(dataManager.LocalPlayerData.PlayerId);
-        dataManager.AddPlayerData(_playerData);
+        Debug.Log($"PlayerController Start: entity[{entityId}]");
+        _player = Game.Instance.GetEntity(entityId);
+        _moveData = _player.GetData<MoveData>();
+        _player.Start();
+    }
 
-        _movementComponent = new PlayerMovementComponent(gameConfig, transform, _playerData);
-        _gravityComponent = new GravityComponent(gameConfig, transform, _playerData);
-        _tppComponent = new TppComponent(gameConfig, transform);
+    private void FixedUpdate()
+    {
+        _player.FixUpdate(Time.deltaTime);
 
-        _movementComponent.Init();
-        _gravityComponent.Init();
-        _tppComponent.Init();
+        if (_moveData.IsDirty)
+        {
+            _characterController.Move(_moveData.Dir);
+            _moveData.IsDirty = false;
+        }
+
+        _moveData.Position = transform.position;
+
     }
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump"))
-        {
-            _movementComponent.Jump();
-        }
+        _player.Update();
+    }
 
-        _movementComponent.Update();
-        _gravityComponent.Update();
-        _tppComponent.Update();
+    private void OnDestroy()
+    {
+        _player.OnDestroy();
     }
 }
