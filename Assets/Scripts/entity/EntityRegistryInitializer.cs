@@ -12,6 +12,7 @@ namespace entity
             ComponentRegistry.RegisterComponents(EntityType.Role, new List<System.Type>
             {
                 typeof(component.InputComponent),
+                typeof(component.GravityComponent),
                 typeof(component.MovementComponent)
             });
         }

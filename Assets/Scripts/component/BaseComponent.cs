@@ -5,7 +5,7 @@ namespace component
 {
     public abstract class BaseComponent
     {
-        protected Entity Entity;
+        protected readonly Entity Entity;
 
         protected BaseComponent(Entity entity)
         {
@@ -16,7 +16,7 @@ namespace component
         {
         }
 
-        public virtual void FixUpdate(float deltaTime)
+        public virtual void FixUpdate()
         {
         }
 

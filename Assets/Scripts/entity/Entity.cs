@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using component;
 using data;
-using System;
 using eventbus;
-using System.Reflection;
+using UnityEngine;
 
 namespace entity
 {
@@ -13,12 +14,14 @@ namespace entity
         private readonly Dictionary<string, BaseComponent> _componentMap = new();
         private static readonly Dictionary<Type, ConstructorInfo> ConstructorCache = new();
 
-        public Entity(long id)
+        public Entity(long id, Transform transform)
         {
             Id = id;
+            Transform = transform;
         }
 
         public long Id { get; }
+        public Transform Transform { get; }
 
         public void Start()
         {
@@ -28,11 +31,11 @@ namespace entity
             }
         }
 
-        public void FixUpdate(float deltaTime)
+        public void FixUpdate()
         {
             foreach (var component in _componentMap.Values)
             {
-                component.FixUpdate(deltaTime);
+                component.FixUpdate();
             }
         }
 
@@ -57,7 +60,8 @@ namespace entity
             // 检查类型是否继承自BaseComponent
             if (!typeof(BaseComponent).IsAssignableFrom(componentType))
             {
-                throw new ArgumentException($"Type {componentType.Name} must inherit from BaseComponent", nameof(componentType));
+                throw new ArgumentException($"Type {componentType.Name} must inherit from BaseComponent",
+                    nameof(componentType));
             }
 
             // 获取带Entity参数的构造函数（带缓存）
@@ -66,8 +70,11 @@ namespace entity
                 ctor = componentType.GetConstructor(new[] { typeof(Entity) });
                 if (ctor == null)
                 {
-                    throw new ArgumentException($"Component type {componentType.Name} must have a constructor with Entity parameter", nameof(componentType));
+                    throw new ArgumentException(
+                        $"Component type {componentType.Name} must have a constructor with Entity parameter",
+                        nameof(componentType));
                 }
+
                 ConstructorCache[componentType] = ctor;
             }
 
@@ -88,6 +95,7 @@ namespace entity
                 data = new T();
                 _dataMap[dataName] = data;
             }
+
             return data as T;
         }
 

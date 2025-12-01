@@ -7,11 +7,29 @@ namespace component
 {
     public class MovementComponent : BaseComponent
     {
-        private readonly MoveData _moveData;
+        private MoveData _moveData;
+
+        private CharacterController _characterController;
 
         public MovementComponent(Entity entity) : base(entity)
         {
+        }
+
+        public override void Start()
+        {
+            _characterController = Entity.Transform.GetComponent<CharacterController>();
+            if (!_characterController)
+            {
+                Debug.LogError($"MovementComponent Entity[{Entity.Id}] 未找到组件CharacterController");
+                return;
+            }
+
             _moveData = Entity.GetData<MoveData>();
+        }
+
+        public override void FixUpdate()
+        {
+            _characterController.Move(_moveData.UpVelocity * Time.deltaTime);
         }
 
         [EventListen(typeof(JumpEvent))]
@@ -19,7 +37,7 @@ namespace component
         {
             if (_moveData.IsGround)
             {
-                _moveData.Velocity.y += Mathf.Sqrt(Game.Instance.RunParam.jumpHeight * -2f * Game.Instance.RunParam.gravity);
+                _moveData.UpVelocity.y += Mathf.Sqrt(Game.Instance.RunParam.jumpHeight * -2f * Game.Instance.RunParam.gravity);
             }
         }
     }

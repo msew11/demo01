@@ -5,11 +5,15 @@ using UnityEngine.InputSystem;
 
 namespace component
 {
-    public class InputComponent: BaseComponent
+    public class InputComponent : BaseComponent
     {
-        private readonly InputSystem _inputSystem;
+        private InputSystem _inputSystem;
 
         public InputComponent(Entity entity) : base(entity)
+        {
+        }
+
+        public override void Start()
         {
             _inputSystem = new InputSystem();
             _inputSystem.Player.Enable();

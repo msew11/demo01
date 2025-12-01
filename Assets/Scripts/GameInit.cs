@@ -29,8 +29,16 @@ public class GameInit : MonoBehaviour
     {
         Debug.Log("GameInit Start");
 
+        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        GameObject localPlayerObject = System.Array.Find(allObjects, obj => obj.name == "LocalPlayer");
+        if (localPlayerObject == null)
+        {
+            Debug.LogError("localPlayerObject Not Find");
+            return;
+        }
+
         // todo 拿到玩家Id，初始化localPlayer的角色Entity
-        var entity = EntityFactory.CreateEntity(EntityType.Role);
+        var entity = EntityFactory.CreateEntity(EntityType.Role, localPlayerObject);
         var playerData = entity.GetData<PlayerData>();
         playerData.PlayerId = "000001";
 
@@ -41,25 +49,15 @@ public class GameInit : MonoBehaviour
         // 初始化
         _game.LocalPlayerData = new LocalPlayerData(entity.Id, playerData.PlayerId);
 
-        // 查找名为LocalPlayer的游戏对象并启用它
-        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-        GameObject localPlayerObject = System.Array.Find(allObjects, obj => obj.name == "LocalPlayer");
-        if (localPlayerObject != null)
+        // 获取PlayerController组件并设置entityId属性
+        PlayerController playerController = localPlayerObject.GetComponent<PlayerController>();
+        if (playerController != null)
         {
-            // 获取PlayerController组件并设置entityId属性
-            PlayerController playerController = localPlayerObject.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                playerController.entityId = entity.Id;
-            }
+            playerController.entityId = entity.Id;
+        }
 
-            Debug.Log("localPlayerObject Active");
-            localPlayerObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("localPlayerObject Not Find");
-        }
+        Debug.Log("localPlayerObject Active");
+        localPlayerObject.SetActive(true);
     }
 
     void Update()

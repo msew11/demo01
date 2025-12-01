@@ -44,7 +44,7 @@ namespace Tests.PerformanceTests
 
         private void Setup()
         {
-            _testEntity = new Entity(1);
+            _testEntity = new Entity(1, null);
             _componentType = typeof(TestComponent);
             _constructorInfo = _componentType.GetConstructor(new[] { typeof(Entity) });
         }

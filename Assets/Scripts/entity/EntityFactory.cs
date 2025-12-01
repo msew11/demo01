@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace entity
 {
@@ -6,13 +7,13 @@ namespace entity
     {
         private static long _nextId = 1;
 
-        public static Entity CreateEntity(EntityType entityType)
+        public static Entity CreateEntity(EntityType entityType, GameObject obj)
         {
             // 生成唯一ID
             long id = _nextId++;
 
             // 创建实体并传入ID
-            Entity entity = new Entity(id);
+            Entity entity = new Entity(id, obj.transform);
 
             // 根据注册表自动添加组件
             var registeredComponents = ComponentRegistry.GetRegisteredComponents(entityType);
