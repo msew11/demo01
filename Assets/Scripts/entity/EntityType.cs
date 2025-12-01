@@ -2,6 +2,6 @@ namespace entity
 {
     public enum EntityType
     {
-        Role = 1
+        LocalPlayer = 1
     }
 }

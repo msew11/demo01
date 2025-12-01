@@ -9,7 +9,7 @@ namespace entity
     {
         public static void Initialize()
         {
-            ComponentRegistry.RegisterComponents(EntityType.Role, new List<System.Type>
+            ComponentRegistry.RegisterComponents(EntityType.LocalPlayer, new List<System.Type>
             {
                 typeof(component.InputComponent),
                 typeof(component.GravityComponent),

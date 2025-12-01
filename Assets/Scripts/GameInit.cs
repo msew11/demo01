@@ -38,7 +38,7 @@ public class GameInit : MonoBehaviour
         }
 
         // todo 拿到玩家Id，初始化localPlayer的角色Entity
-        var entity = EntityFactory.CreateEntity(EntityType.Role, localPlayerObject);
+        var entity = EntityFactory.CreateEntity(EntityType.LocalPlayer, localPlayerObject);
         var playerData = entity.GetData<PlayerData>();
         playerData.PlayerId = "000001";
 

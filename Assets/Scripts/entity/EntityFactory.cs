@@ -27,7 +27,7 @@ namespace entity
 
             switch (entityType)
             {
-                case EntityType.Role:
+                case EntityType.LocalPlayer:
                     return entity;
                 default:
                     throw new ArgumentException($"Unsupported entity type: {entityType}");
