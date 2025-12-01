@@ -4181,7 +4181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55863d8c695c4c4ebd6529fe2a5f1a48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerConfig: {fileID: 11400000, guid: 0962e5258abca914db61c50550046b12, type: 2}
+  runParam: {fileID: 11400000, guid: 0962e5258abca914db61c50550046b12, type: 2}
+  setting: {fileID: 11400000, guid: 1c24467e7055a7244acc0a1809fce037, type: 2}
 --- !u!1 &1791988071
 GameObject:
   m_ObjectHideFlags: 0

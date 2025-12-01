@@ -1,3 +1,4 @@
+using configs;
 using data;
 using entity;
 using eventbus;
@@ -5,7 +6,8 @@ using UnityEngine;
 
 public class GameInit : MonoBehaviour
 {
-    [SerializeField] PlayerConfig playerConfig;
+    [SerializeField] GameRunParam runParam;
+    [SerializeField] GameSetting setting;
 
     private Game _game;
 
@@ -33,7 +35,8 @@ public class GameInit : MonoBehaviour
         playerData.PlayerId = "000001";
 
         // 玩家配置
-        _game.PlayerConfig = playerConfig;
+        _game.RunParam = runParam;
+        _game.Setting = setting;
 
         // 初始化
         _game.LocalPlayerData = new LocalPlayerData(entity.Id, playerData.PlayerId);

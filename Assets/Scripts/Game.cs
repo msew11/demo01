@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using configs;
 using data;
 using entity;
 
@@ -6,7 +7,8 @@ public class Game
 {
     public static Game Instance { get; } = new Game();
 
-    public PlayerConfig PlayerConfig;
+    public GameRunParam RunParam;
+    public GameSetting Setting;
     public LocalPlayerData LocalPlayerData;
     private readonly Dictionary<long, Entity> _entityMap;
 
