@@ -41,4 +41,11 @@ ExportedObj/
 # Mac OS
 .DS_Store
 
+# NuGet importer
+/[Aa]ssets/[Pp]ackages.meta
+/[Aa]ssets/[Pp]ackages/
+/[Nn]u[Gg]et/
+/[Pp]ackages/*/
+
+BenchmarkDotNet.Artifacts
 .idea

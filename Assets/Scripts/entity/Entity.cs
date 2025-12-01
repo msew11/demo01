@@ -3,6 +3,7 @@ using component;
 using data;
 using System;
 using eventbus;
+using System.Reflection;
 
 namespace entity
 {
@@ -10,6 +11,7 @@ namespace entity
     {
         private readonly Dictionary<string, BaseData> _dataMap = new();
         private readonly Dictionary<string, BaseComponent> _componentMap = new();
+        private static readonly Dictionary<Type, ConstructorInfo> ConstructorCache = new();
 
         public Entity(long id)
         {
@@ -58,11 +60,15 @@ namespace entity
                 throw new ArgumentException($"Type {componentType.Name} must inherit from BaseComponent", nameof(componentType));
             }
 
-            // 获取带Entity参数的构造函数
-            var ctor = componentType.GetConstructor(new[] { typeof(Entity) });
-            if (ctor == null)
+            // 获取带Entity参数的构造函数（带缓存）
+            if (!ConstructorCache.TryGetValue(componentType, out var ctor))
             {
-                throw new ArgumentException($"Component type {componentType.Name} must have a constructor with Entity parameter", nameof(componentType));
+                ctor = componentType.GetConstructor(new[] { typeof(Entity) });
+                if (ctor == null)
+                {
+                    throw new ArgumentException($"Component type {componentType.Name} must have a constructor with Entity parameter", nameof(componentType));
+                }
+                ConstructorCache[componentType] = ctor;
             }
 
             // 使用带Entity参数的构造函数创建实例
