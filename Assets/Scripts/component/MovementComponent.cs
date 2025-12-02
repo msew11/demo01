@@ -30,6 +30,10 @@ namespace component
         public override void FixUpdate()
         {
             _characterController.Move(_moveData.UpVelocity * Time.deltaTime);
+            if (_moveData.Dir != Vector3.zero)
+            {
+                _characterController.Move(_moveData.Dir * (Time.deltaTime * Game.Instance.RunParam.speed));
+            }
         }
 
         [EventListen(typeof(JumpEvent))]
@@ -39,6 +43,13 @@ namespace component
             {
                 _moveData.UpVelocity.y += Mathf.Sqrt(Game.Instance.RunParam.jumpHeight * -2f * Game.Instance.RunParam.gravity);
             }
+        }
+
+        [EventListen(typeof(MoveEvent))]
+        public void OnMove(MoveEvent ev)
+        {
+            Debug.Log($"OnMove {ev.Dir}");
+            _moveData.Dir = Entity.Transform.forward * ev.Dir.y + Entity.Transform.right * ev.Dir.x;
         }
     }
 }
