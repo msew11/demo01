@@ -29,6 +29,18 @@ public class GameInit : MonoBehaviour
     {
         Debug.Log("GameInit Start");
 
+        if (runParam == null)
+        {
+            Debug.LogError("runParam Not Find");
+            return;
+        }
+
+        if (setting == null)
+        {
+            Debug.LogError("setting Not Find");
+            return;
+        }
+
         GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
         GameObject localPlayerObject = System.Array.Find(allObjects, obj => obj.name == "LocalPlayer");
         if (localPlayerObject == null)
