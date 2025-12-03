@@ -1,3 +1,4 @@
+using data;
 using entity;
 using eventbus;
 using UnityEngine;
@@ -6,25 +7,27 @@ namespace component
 {
     public class CameraTppComponent : BaseComponent
     {
+        private MoveData _moveData;
+
         public CameraTppComponent(Entity entity) : base(entity)
         {
         }
 
         public override void Start()
         {
+            _moveData = Entity.GetData<MoveData>();
         }
 
         public override void FixUpdate()
         {
         }
 
-        private float _roleYaw; // 角色水平旋转角度
 
         [EventListen(typeof(LookEvent))]
         public void OnLook(LookEvent ev)
         {
-            _roleYaw += ev.Dir.x * Game.Instance.Setting.mouseSensitivity;
-            Entity.Transform.localRotation = Quaternion.Euler(0, _roleYaw, 0);
+            _moveData.RoleYaw += ev.Dir.x * Game.Instance.Setting.mouseSensitivity;
+            Entity.Transform.localRotation = Quaternion.Euler(0, _moveData.RoleYaw, 0);
         }
     }
 }

@@ -11,5 +11,7 @@ namespace data
 
         public Vector3 Position = Vector3.zero;
         public Vector2 MoveDir = Vector3.zero;
+
+        public float RoleYaw = 0;
     }
 }

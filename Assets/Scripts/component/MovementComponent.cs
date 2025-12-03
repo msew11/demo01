@@ -10,7 +10,6 @@ namespace component
         private MoveData _moveData;
 
         private CharacterController _characterController;
-        private Vector2 _moveDir = Vector2.zero;
 
         public MovementComponent(Entity entity) : base(entity)
         {
@@ -31,9 +30,9 @@ namespace component
         public override void FixUpdate()
         {
             _characterController.Move(_moveData.UpVelocity * Time.deltaTime);
-            if (_moveDir != Vector2.zero)
+            if (_moveData.MoveDir != Vector2.zero)
             {
-                _characterController.Move((Entity.Transform.forward * _moveDir.y + Entity.Transform.right * _moveDir.x)
+                _characterController.Move((Entity.Transform.forward * _moveData.MoveDir.y + Entity.Transform.right * _moveData.MoveDir.x)
                                           * (Time.deltaTime * Game.Instance.RunParam.speed));
             }
         }
@@ -51,7 +50,7 @@ namespace component
         [EventListen(typeof(MoveEvent))]
         public void OnMove(MoveEvent ev)
         {
-            _moveDir = ev.Dir;
+            _moveData.MoveDir = ev.Dir;
         }
     }
 }
