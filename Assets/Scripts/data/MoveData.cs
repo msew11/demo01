@@ -13,5 +13,7 @@ namespace data
         public Vector2 MoveDir = Vector3.zero;
 
         public float RoleYaw = 0;
+        public float CameraPitch = 0;
+        public float CameraYaw = 0;
     }
 }

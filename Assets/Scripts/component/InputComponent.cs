@@ -21,6 +21,8 @@ namespace component
             _inputSystem.Player.Move.performed += Move;
             _inputSystem.Player.Move.canceled += Move;
             _inputSystem.Player.Look.performed += Look;
+            _inputSystem.Player.LockMouse.performed += LockMouse;
+            _inputSystem.Player.LockMouse.canceled += UnLockMouse;
         }
 
         public override void OnDestroy()
@@ -29,6 +31,8 @@ namespace component
             _inputSystem.Player.Move.performed -= Move;
             _inputSystem.Player.Move.canceled -= Move;
             _inputSystem.Player.Look.performed -= Look;
+            _inputSystem.Player.LockMouse.performed -= LockMouse;
+            _inputSystem.Player.LockMouse.canceled -= UnLockMouse;
             _inputSystem.Player.Disable();
             _inputSystem.Dispose();
         }
@@ -53,6 +57,24 @@ namespace component
         private void Look(InputAction.CallbackContext context)
         {
             Entity.SendEvent(new LookEvent(context.ReadValue<Vector2>()));
+        }
+
+        private void LockMouse(InputAction.CallbackContext context)
+        {
+            if (Cursor.visible)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+        }
+
+        private void UnLockMouse(InputAction.CallbackContext context)
+        {
+            if (!Cursor.visible)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
         }
     }
 }

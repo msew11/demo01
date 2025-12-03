@@ -1,12 +1,13 @@
 using data;
 using entity;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace component
 {
     public class GravityComponent : BaseComponent
     {
-        private Transform _groundCheck;
+        [CanBeNull] private Transform _groundCheck;
         private MoveData _moveData;
 
         public GravityComponent(Entity entity) : base(entity)
@@ -19,7 +20,6 @@ namespace component
             if (!_groundCheck)
             {
                 Debug.LogError($"GravityComponent Entity[{Entity.Id}] 未设定GroundCheck");
-                return;
             }
 
             _moveData = Entity.GetData<MoveData>();
@@ -27,16 +27,15 @@ namespace component
 
         public override void FixUpdate()
         {
-            if (!_groundCheck)
-            {
-                return;
-            }
 
-            _moveData.IsGround = Physics.CheckSphere(
-                _groundCheck.position,
-                Game.Instance.RunParam.groundCheckRadius,
-                Game.Instance.RunParam.groundLayer
-            );
+            if (_groundCheck)
+            {
+                _moveData.IsGround = Physics.CheckSphere(
+                    _groundCheck.position,
+                    Game.Instance.RunParam.groundCheckRadius,
+                    Game.Instance.RunParam.groundLayer
+                );
+            }
 
             if (_moveData.IsGround && _moveData.UpVelocity.y < 0)
             {
