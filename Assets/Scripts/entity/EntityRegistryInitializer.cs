@@ -12,6 +12,7 @@ namespace entity
             ComponentRegistry.RegisterComponents(EntityType.LocalPlayer, new List<System.Type>
             {
                 typeof(component.InputComponent),
+                typeof(component.CameraTppComponent),
                 typeof(component.GravityComponent),
                 typeof(component.MovementComponent)
             });

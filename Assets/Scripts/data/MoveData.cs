@@ -10,6 +10,6 @@ namespace data
         public Vector3 UpVelocity = Vector3.zero;
 
         public Vector3 Position = Vector3.zero;
-        public Vector3 Dir = Vector3.zero;
+        public Vector2 MoveDir = Vector3.zero;
     }
 }

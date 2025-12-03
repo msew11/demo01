@@ -20,6 +20,7 @@ namespace component
             _inputSystem.Player.Jump.performed += Jump;
             _inputSystem.Player.Move.performed += Move;
             _inputSystem.Player.Move.canceled += Move;
+            _inputSystem.Player.Look.performed += Look;
         }
 
         public override void OnDestroy()
@@ -27,6 +28,7 @@ namespace component
             _inputSystem.Player.Jump.performed -= Jump;
             _inputSystem.Player.Move.performed -= Move;
             _inputSystem.Player.Move.canceled -= Move;
+            _inputSystem.Player.Look.performed -= Look;
             _inputSystem.Player.Disable();
             _inputSystem.Dispose();
         }
@@ -46,6 +48,11 @@ namespace component
         private void Move(InputAction.CallbackContext context)
         {
             Entity.SendEvent(new MoveEvent(context.ReadValue<Vector2>()));
+        }
+
+        private void Look(InputAction.CallbackContext context)
+        {
+            Entity.SendEvent(new LookEvent(context.ReadValue<Vector2>()));
         }
     }
 }

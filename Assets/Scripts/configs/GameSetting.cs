@@ -9,6 +9,7 @@ namespace configs
     public class GameSetting : ScriptableObject
     {
         [Header("Mouse Settings")]
-        public float mouseSensitivity = 2.0f;
+        [Range(0f, 1f)]
+        public float mouseSensitivity = 0.2f;
     }
 }
